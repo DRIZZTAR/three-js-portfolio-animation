@@ -8,9 +8,10 @@ import { useControls } from 'leva';
 export function Avatar(props) {
 
   const {animation} = props;
-  const { headFollow, cursorFollow } = useControls({
+  const { headFollow, cursorFollow, wireframe } = useControls({
     headFollow: false,
     cursorFollow: false,
+    wireframe: false,
   });
   const group = useRef();
   const { nodes, materials } = useGLTF("models/avatar.glb");
@@ -36,12 +37,17 @@ export function Avatar(props) {
    });
 
   useEffect(() => {
-    actions[animation].reset().play();
+    actions[animation].reset().fadeIn(0.5).play();
     return () => {
-      actions[animation].stop();
+      actions[animation].reset().fadeOut(0.5);
     }
   }, [animation]);
 
+  useEffect(() => {
+    Object.values(materials).forEach((material) => {
+      material.wireframe = wireframe;
+    });
+  }, [wireframe]);
   
   return (
     
